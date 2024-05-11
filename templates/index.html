@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<header class="container">
+    <h1>Can you find the XSS</h1>
+    <hr/>
+</header>
+
+<div class="container">
+    <article>
+        <h2>XSS me!</h2>
+        <p>The interesting stuff is on the bottom</p>
+
+        <p>Enjoy!</p>
+    </article>
+
+	<section class="comments">
+        <h4>Comments</h4>
+        {% if not comments %}
+            <p>No comments... yet!</p>
+        {% else %}
+            <form id="clear-comments" action="{{ url_for('clear_comments') }}" method="post">
+                <input class="clear button-primary" value="Clear Comments" type="submit"/>
+            </form>
+        {% endif %}
+		{% for comment in comments %}
+			<article class="comment">
+				<span class="name">{{ comment.name }} says:</span>
+                <p class="text">{{ comment.comment|safe }}</p>
+			</article>
+		{% endfor %}
+	</section>
+
+    <form id="new-comment" action="{{ url_for('comment') }}" method="post">
+        <fieldset>
+            <legend>Post a comment</legend>
+            <div class="row">
+                <div class="six columns">
+                    <label for="name">Name</label>
+                    <input class="u-full-width" id="name" name="name" type="text" placeholder="Horrible hacker type of guy"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="twelve columns">
+                    <label for="comment-text">Comment</label>
+                    <textarea name="comment" id="comment-text" class="u-full-width" cols="30" rows="20" placeholder="Try the payload"></textarea>
+                </div>
+            </div>
+            <input class="button-primary" type="submit" value="Submit"/>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
